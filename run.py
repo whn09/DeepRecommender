@@ -10,8 +10,8 @@ from torch.autograd import Variable
 import copy
 import time
 from pathlib import Path
-#from logger import Logger
-from loggerX import Logger
+from logger import Logger
+#from loggerX import Logger
 from math import sqrt
 import numpy as np
 import os
@@ -150,7 +150,7 @@ def main():
   
   if use_gpu: rencoder = rencoder.cuda()
 
-  logger.graph_summary(rencoder)
+  #logger.graph_summary(rencoder)
         
   if args.optimizer == "adam":
     optimizer = optim.Adam(rencoder.parameters(),

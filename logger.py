@@ -20,10 +20,6 @@ class Logger(object):
     """Log a scalar variable."""
     summary = tf.Summary(value=[tf.Summary.Value(tag=tag, simple_value=value)])
     self.writer.add_summary(summary, step)
-    
-  def graph_summary(self, model):
-    """Log a graph variable."""
-    self.writer.add_graph(model, ())
 
   def image_summary(self, tag, images, step):
     """Log a list of images."""
