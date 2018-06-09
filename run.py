@@ -232,7 +232,7 @@ def main():
           .format(epoch, e_end_time - e_start_time, sqrt(total_epoch_loss/denom)))
     logger.scalar_summary("Training_RMSE_per_epoch", sqrt(total_epoch_loss/denom), epoch)
     logger.scalar_summary("Epoch_time", e_end_time - e_start_time, epoch)
-    if epoch % 3 == 0 or epoch == args.num_epochs - 1:
+    if epoch % 10 == 0 or epoch == args.num_epochs - 1:
       eval_loss = do_eval(rencoder, eval_data_layer)
       print('Epoch {} EVALUATION LOSS: {}'.format(epoch, eval_loss))
       logger.scalar_summary("EVALUATION_RMSE", eval_loss, epoch)
