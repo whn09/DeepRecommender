@@ -118,6 +118,7 @@ def main(args):
   print("STATS FOR ALL INPUT DATA")
   print_stats(all_data)
 
+  '''
   # Netflix full
   (nf_train, nf_valid, nf_test) = create_NETFLIX_data_timesplit(all_data,
                                                                 "1999-12-01",
@@ -133,7 +134,7 @@ def main(args):
   print("Netflix full test")
   print_stats(nf_test)
   save_data_to_file(nf_test, out_folder + "/NF_TEST/nf.test.txt")
-
+  '''
 
   (n3m_train, n3m_valid, n3m_test) = create_NETFLIX_data_timesplit(all_data,
                                                                    "2005-09-01",
@@ -150,6 +151,7 @@ def main(args):
   print_stats(n3m_test)
   save_data_to_file(n3m_test, out_folder + "/N3M_TEST/n3m.test.txt")
 
+  '''
   (n6m_train, n6m_valid, n6m_test) = create_NETFLIX_data_timesplit(all_data,
                                                                    "2005-06-01",
                                                                    "2005-11-30",
@@ -180,6 +182,7 @@ def main(args):
   print("Netflix 1y test")
   print_stats(n1y_test)
   save_data_to_file(n1y_test, out_folder + "/N1Y_TEST/n1y.test.txt")
+  '''
 
 if __name__ == "__main__":
     main(sys.argv)

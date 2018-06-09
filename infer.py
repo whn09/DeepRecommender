@@ -6,6 +6,12 @@ from reco_encoder.data import input_layer
 from reco_encoder.model import model
 from torch.autograd import Variable
 from pathlib import Path
+from math import sqrt
+import numpy as np  
+import matplotlib.pyplot as plt  
+from sklearn import svm, datasets  
+from sklearn.metrics import roc_curve, auc  ###计算roc和auc  
+from sklearn import cross_validation  
 
 parser = argparse.ArgumentParser(description='RecoEncoder')
 
@@ -37,6 +43,19 @@ if use_gpu:
 else: 
     print('GPU is not available.')
 
+def do_eval(encoder, evaluation_data_layer):
+  encoder.eval()
+  denom = 0.0
+  total_epoch_loss = 0.0
+  for i, (eval, src) in enumerate(evaluation_data_layer.iterate_one_epoch_eval()):
+    inputs = Variable(src.cuda().to_dense() if use_gpu else src.to_dense())
+    targets = Variable(eval.cuda().to_dense() if use_gpu else eval.to_dense())
+    outputs = encoder(inputs)
+    loss, num_ratings = model.MSEloss(outputs, targets)
+    total_epoch_loss += loss.data[0]
+    denom += num_ratings.data[0]
+  return sqrt(total_epoch_loss / denom)
+    
 def main():
   params = dict()
   params['batch_size'] = 1
@@ -83,6 +102,8 @@ def main():
   inv_itemIdMap = {v: k for k, v in data_layer.itemIdMap.items()}
 
   eval_data_layer.src_data = data_layer.data
+  y_test = []
+  y_score = []
   with open(args.predictions_path, 'w') as outf:
     for i, ((out, src), majorInd) in enumerate(eval_data_layer.iterate_one_epoch_eval(for_inf=True)):
       inputs = Variable(src.cuda().to_dense() if use_gpu else src.to_dense())
@@ -92,8 +113,33 @@ def main():
       major_key = inv_userIdMap [majorInd]
       for ind in non_zeros:
         outf.write("{}\t{}\t{}\t{}\n".format(major_key, inv_itemIdMap[ind], outputs[ind], targets_np[ind]))
+        y_test.append(targets_np[ind]-1)
+        y_score.append(outputs[ind]-1)
       if i % 10000 == 0:
         print("Done: {}".format(i))
+        
+  eval_loss = do_eval(rencoder, eval_data_layer)
+  print('EVALUATION LOSS: {}'.format(eval_loss))
+    
+  try:
+      fpr,tpr,threshold = roc_curve(y_test, y_score) ###计算真正率和假正率  
+      roc_auc = auc(fpr,tpr) ###计算auc的值  
+      print('AUC:', roc_auc)
+      plt.figure()  
+      lw = 2  
+      plt.figure(figsize=(10,10))  
+      plt.plot(fpr, tpr, color='darkorange', lw=lw, label='ROC curve (area = %0.2f)' % roc_auc) ###假正率为横坐标，真正率为纵坐标做曲线  
+      plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')  
+      plt.xlim([0.0, 1.0])  
+      plt.ylim([0.0, 1.05])  
+      plt.xlabel('False Positive Rate')  
+      plt.ylabel('True Positive Rate')  
+      plt.title('ROC')  
+      plt.legend(loc="lower right")
+      plt.savefig(args.predictions_path+'.png')
+      #plt.show() 
+  except:
+      pass
 
 if __name__ == '__main__':
   main()
