@@ -1,0 +1,15 @@
+python3 run.py --gpu_ids 0 \
+--path_to_train_data ../dataset/movielens/ml-20m/ml-20m.train \
+--path_to_eval_data ../dataset/movielens/ml-20m/ml-20m.valid \
+--hidden_layers 512,512,1024 \
+--non_linearity_type selu \
+--batch_size 128 \
+--logdir model_save_movielens \
+--drop_prob 0.8 \
+--optimizer momentum \
+--lr 0.005 \
+--weight_decay 0 \
+--aug_step 1 \
+--noise_prob 0 \
+--num_epochs 10 \
+--summary_frequency 1000
