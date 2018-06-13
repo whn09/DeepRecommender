@@ -1,11 +1,11 @@
 python3 infer.py \
---hidden_layers 512,512,1024 \
+--hidden_layers 128,256,256 \
 --non_linearity_type selu \
 --drop_prob 0.8 \
---path_to_train_data ../dataset/log_preprocess/train_binary.txt \
---path_to_eval_data ../dataset/log_preprocess/test_binary.txt \
---save_path model_save_funny_binary_adagrad/model.epoch_99 \
---predictions_path model_save_funny_binary_adagrad/preds.txt
+--path_to_train_data ../dataset/log_preprocess/train_multi.txt \
+--path_to_eval_data ../dataset/log_preprocess/test_multi.txt \
+--save_path model_save_funny_multi/model.epoch_499 \
+--predictions_path model_save_funny_multi/preds.txt
 
 #--path_to_train_data ../dataset/log_preprocess/train \
 #--path_to_eval_data ../dataset/log_preprocess/test \
