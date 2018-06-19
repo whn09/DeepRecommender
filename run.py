@@ -112,7 +112,7 @@ def main():
   print("Loading training data")
   data_layer = input_layer.UserItemRecDataProvider(params=params)
   print("Data loaded")
-  print("Total items found: {}".format(len(data_layer.data.keys())))
+  print("Total {} found: {}".format(params['major'], len(data_layer.data.keys())))
   print("Vector dim: {}".format(data_layer.vector_dim))
 
   print("Loading eval data")
