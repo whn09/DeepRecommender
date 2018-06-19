@@ -56,6 +56,7 @@ args = parser.parse_args()
 print(args)
 
 use_gpu = torch.cuda.is_available() # global flag
+#use_gpu = False # TODO close gpu for temp
 if use_gpu:
     print('GPU is available.') 
 else: 

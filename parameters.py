@@ -8,7 +8,7 @@ TEST = os.path.join(DATA_ROOT, 'test.txt')
 
 #Autoencoder parameters
 GPUS = 0
-USE_GPU = False
+USE_GPU = True
 ACTIVATION = 'selu'
 OPTIMIZER = 'momentum'
 HIDDEN = '128,256,256'
@@ -21,7 +21,7 @@ AUG_STEP = 1
 MODEL_OUTPUT_DIR = 'model_save_funny'
 
 #Evaluation
-INFER_OUTPUT = os.path.join(MODEL_OUTPUT_DIR, 'preds.txt')
+INFER_OUTPUT = os.path.join(MODEL_OUTPUT_DIR, 'preds_api.txt')
 MODEL_PATH = os.path.join(MODEL_OUTPUT_DIR, 'model.epoch_' + str(EPOCHS-1))
 MOVIE_TITLES = os.path.join(DATA_ROOT,'contentid_titles.txt')
 
