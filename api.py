@@ -120,8 +120,8 @@ def evaluate_model(rencoder_api, data_api):
         targets_np = out.to_dense().numpy()[0, :]
         outputs = rencoder_api(inputs).cpu().data.numpy()[0, :]
         non_zeros = targets_np.nonzero()[0].tolist()
-        print('targets_np:', targets_np)
-        print('non_zeros:', non_zeros)
+        cherrypy.log('targets_np:'+str(targets_np))
+        cherrypy.log('non_zeros:'+str(non_zeros))
         for ind in non_zeros:
             result[ind] = outputs[ind]
     return result
