@@ -100,7 +100,7 @@ def load_train_data(data_dir):
 def manage_query(dict_query, user_id, data_layer):
     params = dict()
     params['batch_size'] = 1
-    params['data_dict'] =  dict_query
+    params['data_dict'] = dict_query
     params['major'] = 'users'
     params['itemIdInd'] = 1
     params['userIdInd'] = 0
@@ -118,8 +118,10 @@ def evaluate_model(rencoder_api, data_api):
     for i, ((out, src), major_ind) in enumerate(data_api.iterate_one_epoch_eval(for_inf=True)):
         inputs = Variable(src.cuda().to_dense() if USE_GPU else src.to_dense())
         targets_np = out.to_dense().numpy()[0, :]
-        non_zeros = targets_np.nonzero()[0].tolist() 
         outputs = rencoder_api(inputs).cpu().data.numpy()[0, :]
+        non_zeros = targets_np.nonzero()[0].tolist()
+        print('targets_np:', targets_np)
+        print('non_zeros:', non_zeros)
         for ind in non_zeros:
             result[ind] = outputs[ind]
     return result
