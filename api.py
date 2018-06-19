@@ -85,12 +85,15 @@ def load_recommender(vector_dim, hidden, activation, dropout, weights_path):
 def load_train_data(data_dir):    
     params = dict()
     params['batch_size'] = 1
-    params['data_dir'] =  data_dir
+    params['data_dir'] = data_dir
     params['major'] = 'users'
     params['itemIdInd'] = 1
     params['userIdInd'] = 0
     cherrypy.log("CHERRYPYLOG Loading training data")
     data_layer = input_layer.UserItemRecDataProvider(params=params)
+    cherrypy.log("Data loaded")
+    cherrypy.log("Total {} found: {}".format(params['major'], len(data_layer.data.keys())))
+    cherrypy.log("Vector dim: {}".format(data_layer.vector_dim))
     return data_layer
 
 
