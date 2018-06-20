@@ -63,22 +63,22 @@ class UserItemRecDataProviderAPI:
   def iterate_one_epoch_eval(self, for_inf=False):
     keys = list(self.data.keys())
     #print('keys:'+str(keys))
-    print('self.data:'+str(self.data))
+    #print('self.data:'+str(self.data))
     s_ind = 0
     while s_ind < len(keys):
       inds1 = [0] * len([v[0] for v in self.data[keys[s_ind]]])
       inds2 = [v[0] for v in self.data[keys[s_ind]]]
       vals = [v[1] for v in self.data[keys[s_ind]]]
-      print('inds1:'+str(inds1))
-      print('inds2:'+str(inds2))
-      print('vals:'+str(vals))
+      #print('inds1:'+str(inds1))
+      #print('inds2:'+str(inds2))
+      #print('vals:'+str(vals))
 
       src_inds1 = [0] * len([v[0] for v in self.src_data[keys[s_ind]]])
       src_inds2 = [v[0] for v in self.src_data[keys[s_ind]]]
       src_vals = [v[1] for v in self.src_data[keys[s_ind]]]
-      print('src_inds1:'+str(src_inds1))
-      print('src_inds2:'+str(src_inds2))
-      print('src_vals:'+str(src_vals))
+      #print('src_inds1:'+str(src_inds1))
+      #print('src_inds2:'+str(src_inds2))
+      #print('src_vals:'+str(src_vals))
         
       i_torch = torch.LongTensor([inds1, inds2])
       v_torch = torch.FloatTensor(vals)

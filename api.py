@@ -114,7 +114,7 @@ def manage_query(dict_query, user_id, data_layer):
                                                         item_id_map=data_layer.itemIdMap)
     #cherrypy.log("CHERRYPYLOG Input data: {}".format(data_api.data))
     data_api.src_data = data_layer.data
-    cherrypy.log("data_api: {}".format(data_api))
+    #cherrypy.log("data_api: {}".format(data_api))
     return data_api
 
 
@@ -127,11 +127,11 @@ def evaluate_model(rencoder_api, data_api, inv_userIdMap, inv_itemIdMap):
         outputs = rencoder_api(inputs).cpu().data.numpy()[0, :]
         non_zeros = targets_np.nonzero()[0].tolist()
         major_key = inv_userIdMap[major_ind]
-        cherrypy.log('targets_np:'+str(targets_np))
-        cherrypy.log('non_zeros:'+str(non_zeros))
-        cherrypy.log('outputs:'+str(outputs))
+        #cherrypy.log('targets_np:'+str(targets_np))
+        #cherrypy.log('non_zeros:'+str(non_zeros))
+        #cherrypy.log('outputs:'+str(outputs))
         for ind in non_zeros:
-            cherrypy.log('{}\t{}\t{}\t{}'.format(major_key, inv_itemIdMap[ind], outputs[ind], targets_np[ind]))
+            #cherrypy.log('{}\t{}\t{}\t{}'.format(major_key, inv_itemIdMap[ind], outputs[ind], targets_np[ind]))
             result[inv_itemIdMap[ind]] = outputs[ind]
     return result
 

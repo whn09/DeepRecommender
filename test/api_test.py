@@ -8,7 +8,7 @@ import time
 DATA_ROOT = '/media/henan.wang/workspace/dataset/log_preprocess'
 TRAIN = os.path.join(DATA_ROOT, 'train.txt')
 EVAL = os.path.join(DATA_ROOT, 'test.txt')
-TEST = os.path.join(DATA_ROOT, 'test_one.txt')
+TEST = os.path.join(DATA_ROOT, 'test.txt')
 MOVIE_TITLES = os.path.join(DATA_ROOT,'contentid_titles.txt')
 MODEL_OUTPUT_DIR = 'model_save_funny'
 INFER_OUTPUT = os.path.join(MODEL_OUTPUT_DIR, 'preds_api.txt')

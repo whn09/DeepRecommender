@@ -113,9 +113,9 @@ def main():
       outputs = rencoder(inputs).cpu().data.numpy()[0, :]
       non_zeros = targets_np.nonzero()[0].tolist()
       major_key = inv_userIdMap[majorInd]
-      print('targets_np:'+str(targets_np))
-      print('non_zeros:'+str(non_zeros))
-      print('outputs:'+str(outputs))
+      #print('targets_np:'+str(targets_np))
+      #print('non_zeros:'+str(non_zeros))
+      #print('outputs:'+str(outputs))
       for ind in non_zeros:
         outf.write("{}\t{}\t{}\t{}\n".format(major_key, inv_itemIdMap[ind], outputs[ind], targets_np[ind]))
         y_test.append(targets_np[ind]-1)
