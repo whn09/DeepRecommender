@@ -141,7 +141,7 @@ class UserItemRecDataProvider:
                     torch.sparse.FloatTensor(src_i_torch, src_v_torch, torch.Size([1, self._vector_dim])))
       s_ind += 1
       if not for_inf:
-        yield  mini_batch
+        yield mini_batch
       else:
         yield mini_batch, keys[s_ind - 1]
 

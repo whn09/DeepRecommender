@@ -1,4 +1,3 @@
-from os import listdir, path
 from random import shuffle
 import torch
 
@@ -28,9 +27,12 @@ class UserItemRecDataProviderAPI:
     self._batch_size = self.params['batch_size']
 
     self.data = dict()
-    self.data[major_map[self.user_id]] = []
-    for item, rating in self._data_dict.items():   
-      self.data[major_map[self.user_id]].append((minor_map[item], float(rating)))
+    key = major_map[self.user_id]
+    self.data[key] = []
+    for item, rating in self._data_dict.items():
+      value = minor_map[int(item)]
+      rating = float(rating)
+      self.data[key].append((value, rating))
 
 
   def iterate_one_epoch(self):
@@ -88,7 +90,7 @@ class UserItemRecDataProviderAPI:
                     torch.sparse.FloatTensor(src_i_torch, src_v_torch, torch.Size([1, self._vector_dim])))
       s_ind += 1
       if not for_inf:
-        yield  mini_batch
+        yield mini_batch
       else:
         yield mini_batch, keys[s_ind - 1]
 

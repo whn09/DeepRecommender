@@ -122,16 +122,16 @@ def evaluate_model(rencoder_api, data_api, inv_userIdMap, inv_itemIdMap):
     result = dict()
     for i, ((out, src), major_ind) in enumerate(data_api.iterate_one_epoch_eval(for_inf=True)):
         #cherrypy.log("i: {}, out: {}, src: {}, major_ind: {}".format(i, out, src, major_ind))
-        major_key = inv_userIdMap[major_ind]
-        cherrypy.log('major_key: {}'.format(major_key))
         inputs = Variable(src.cuda().to_dense() if USE_GPU else src.to_dense())
         targets_np = out.to_dense().numpy()[0, :]
         outputs = rencoder_api(inputs).cpu().data.numpy()[0, :]
         non_zeros = targets_np.nonzero()[0].tolist()
+        major_key = inv_userIdMap[major_ind]
         cherrypy.log('targets_np:'+str(targets_np))
         cherrypy.log('non_zeros:'+str(non_zeros))
         cherrypy.log('outputs:'+str(outputs))
         for ind in non_zeros:
+            cherrypy.log('{}\t{}\t{}\t{}'.format(major_key, inv_itemIdMap[ind], outputs[ind], targets_np[ind]))
             result[inv_itemIdMap[ind]] = outputs[ind]
     return result
 
