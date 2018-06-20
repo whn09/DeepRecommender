@@ -94,7 +94,11 @@ def load_train_data(data_dir):
     cherrypy.log("Data loaded")
     cherrypy.log("Total {} found: {}".format(params['major'], len(data_layer.data.keys())))
     cherrypy.log("Vector dim: {}".format(data_layer.vector_dim))
-    return data_layer
+    cherrypy.log("data_layer.userIdMap: {}".format(len(data_layer.userIdMap)))
+    cherrypy.log("data_layer.itemIdMap: {}".format(len(data_layer.itemIdMap)))
+    inv_userIdMap = {v: k for k, v in data_layer.userIdMap.items()}
+    inv_itemIdMap = {v: k for k, v in data_layer.itemIdMap.items()}
+    return data_layer, inv_userIdMap, inv_itemIdMap
 
 
 def manage_query(dict_query, user_id, data_layer):
@@ -110,12 +114,16 @@ def manage_query(dict_query, user_id, data_layer):
                                                         item_id_map=data_layer.itemIdMap)
     #cherrypy.log("CHERRYPYLOG Input data: {}".format(data_api.data))
     data_api.src_data = data_layer.data
+    cherrypy.log("data_api: {}".format(data_api))
     return data_api
 
 
-def evaluate_model(rencoder_api, data_api):   
+def evaluate_model(rencoder_api, data_api, inv_userIdMap, inv_itemIdMap):   
     result = dict()
     for i, ((out, src), major_ind) in enumerate(data_api.iterate_one_epoch_eval(for_inf=True)):
+        #cherrypy.log("i: {}, out: {}, src: {}, major_ind: {}".format(i, out, src, major_ind))
+        major_key = inv_userIdMap[major_ind]
+        cherrypy.log('major_key: {}'.format(major_key))
         inputs = Variable(src.cuda().to_dense() if USE_GPU else src.to_dense())
         targets_np = out.to_dense().numpy()[0, :]
         outputs = rencoder_api(inputs).cpu().data.numpy()[0, :]
@@ -124,7 +132,7 @@ def evaluate_model(rencoder_api, data_api):
         cherrypy.log('non_zeros:'+str(non_zeros))
         cherrypy.log('outputs:'+str(outputs))
         for ind in non_zeros:
-            result[ind] = outputs[ind]
+            result[inv_itemIdMap[ind]] = outputs[ind]
     return result
 
     
@@ -145,7 +153,7 @@ def recommend():
     else:
         user_id = 0
     data_api = manage_query(dict_query, user_id, data_layer)
-    result = evaluate_model(rencoder_api, data_api)
+    result = evaluate_model(rencoder_api, data_api, inv_userIdMap, inv_itemIdMap)
     #cherrypy.log("CHERRYPYLOG Result: {}".format(result))
     result = dict((str(k), str(v)) for k,v in result.items())
     return make_response(jsonify(result), STATUS_OK)
@@ -162,7 +170,7 @@ print("CUDA: ", get_cuda_version())
 print("USE_GPU: ", USE_GPU)
   
 #Load data and model as global variables
-data_layer = load_train_data(TRAIN)
+data_layer, inv_userIdMap, inv_itemIdMap = load_train_data(TRAIN)
 rencoder_api = load_recommender(data_layer.vector_dim, HIDDEN, ACTIVATION, DROPOUT, MODEL_PATH)
 
 

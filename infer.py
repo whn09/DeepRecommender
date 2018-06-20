@@ -65,6 +65,8 @@ def main():
   print("Data loaded")
   print("Total {} found: {}".format(params['major'], len(data_layer.data.keys())))
   print("Vector dim: {}".format(data_layer.vector_dim))
+  print("data_layer.userIdMap: {}".format(len(data_layer.userIdMap)))
+  print("data_layer.itemIdMap: {}".format(len(data_layer.itemIdMap)))
 
   print("Loading eval data")
   eval_params = copy.deepcopy(params)
@@ -103,11 +105,15 @@ def main():
   y_score = []
   with open(args.predictions_path, 'w') as outf:
     for i, ((out, src), majorInd) in enumerate(eval_data_layer.iterate_one_epoch_eval(for_inf=True)):
+      #print("i: {}, out: {}, src: {}, majorInd: {}".format(i, out, src, majorInd))
       inputs = Variable(src.cuda().to_dense() if use_gpu else src.to_dense())
       targets_np = out.to_dense().numpy()[0, :]
       outputs = rencoder(inputs).cpu().data.numpy()[0, :]
       non_zeros = targets_np.nonzero()[0].tolist()
-      major_key = inv_userIdMap [majorInd]
+      major_key = inv_userIdMap[majorInd]
+      print('targets_np:'+str(targets_np))
+      print('non_zeros:'+str(non_zeros))
+      print('outputs:'+str(outputs))
       for ind in non_zeros:
         outf.write("{}\t{}\t{}\t{}\n".format(major_key, inv_itemIdMap[ind], outputs[ind], targets_np[ind]))
         y_test.append(targets_np[ind]-1)

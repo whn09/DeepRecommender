@@ -23,7 +23,7 @@ def infer_one(dict_query, fout=None):
     res = requests.post(end_point_recommend, data=data, headers=headers)
     #print(res.ok)
     res_json = res.json()
-    #print(json.dumps(res_json, indent=2))
+    print(json.dumps(res_json, indent=2))
     one_hit = 0
     one_not_hit = 0
     two_hit = 0
