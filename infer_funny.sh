@@ -4,7 +4,7 @@ python3 infer.py \
 --drop_prob 0.8 \
 --path_to_train_data ../dataset/log_preprocess/train.txt \
 --path_to_eval_data ../dataset/log_preprocess/test.txt \
---save_path model_save_funny/model.epoch_99 \
+--save_path model_save_funny/model.epoch_199 \
 --predictions_path model_save_funny/preds.txt
 
 #--path_to_train_data ../dataset/log_preprocess/train \

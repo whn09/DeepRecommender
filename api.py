@@ -101,6 +101,26 @@ def load_train_data(data_dir):
     return data_layer, inv_userIdMap, inv_itemIdMap
 
 
+def load_train_muid_and_content_id(muids_map_file, content_ids_map_file):
+    cherrypy.log("CHERRYPYLOG Loading map data")
+    muids_map = {}
+    with open(muids_map_file, 'r') as fin:
+        lines = fin.readlines()
+        for line in lines:
+            params = line.strip().split('\t')
+            muids_map[params[0]] = int(params[1])
+    content_ids_map = {}
+    with open(content_ids_map_file, 'r') as fin:
+        lines = fin.readlines()
+        for line in lines:
+            params = line.strip().split('\t')
+            content_ids_map[params[0]] = int(params[1])
+    cherrypy.log("Map loaded")
+    cherrypy.log("muids_map: {}".format(len(muids_map)))
+    cherrypy.log("content_ids_map: {}".format(len(content_ids_map)))
+    return muids_map, content_ids_map
+
+
 def manage_query(dict_query, user_id, data_layer):
     params = dict()
     params['batch_size'] = 1
@@ -141,8 +161,8 @@ def index():
     return "Yeah, yeah, I highly recommend it"
 
 
-@app.route("/recommend", methods=['POST'])
-def recommend():
+@app.route("/recommend_old", methods=['POST'])
+def recommend_old():
     if not request.is_json:
         abort(BAD_REQUEST)
     dict_query = request.get_json()
@@ -159,6 +179,54 @@ def recommend():
     return make_response(jsonify(result), STATUS_OK)
 
 
+@app.route("/recommend", methods=['POST'])
+def recommend():
+    if not request.is_json:
+        abort(BAD_REQUEST)
+    dict_query = request.get_json()
+    if 'muid' not in dict_query or 'content_ids' not in dict_query:
+        abort(BAD_REQUEST)
+        
+    muid = dict_query['muid']
+    if muid in muids_map:
+        user_id = muids_map[muid]
+    else:
+        user_id = 0 # TODO Assign a default user
+    
+    content_ids = dict_query['content_ids']
+    item_ids = {}
+    if isinstance(content_ids, list):
+        for content_id in content_ids:
+            if content_id in content_ids_map:
+                item_ids[content_ids_map[content_id]] = 1 # Fake rating
+            else:
+                pass
+    else:
+        abort(BAD_REQUEST)
+        
+    #cherrypy.log('user_id: {}'.format(user_id))
+    #cherrypy.log('item_ids: {}'.format(item_ids))
+
+    if len(item_ids) > 0:
+        data_api = manage_query(item_ids, user_id, data_layer)
+        result = evaluate_model(rencoder_api, data_api, inv_userIdMap, inv_itemIdMap)
+    else:
+        result = {}
+    #cherrypy.log("CHERRYPYLOG Result: {}".format(result))
+    new_result = {}
+    new_result['muid'] = muid
+    new_result['content_ids'] = []
+    new_result['ratings'] = []
+    new_result['threshold'] = THRESHOLD
+    for content_id in content_ids:
+        new_result['content_ids'].append(content_id)
+        if content_id in content_ids_map and content_ids_map[content_id] in result:
+            new_result['ratings'].append(float(result[content_ids_map[content_id]]))
+        else:
+            new_result['ratings'].append(999.0) # TODO Fake data
+    return make_response(jsonify(new_result), STATUS_OK)
+
+
 print("OS: ", sys.platform)
 print("Python: ", sys.version)
 print("PyTorch: ", torch.__version__)
@@ -172,7 +240,7 @@ print("USE_GPU: ", USE_GPU)
 #Load data and model as global variables
 data_layer, inv_userIdMap, inv_itemIdMap = load_train_data(TRAIN)
 rencoder_api = load_recommender(data_layer.vector_dim, HIDDEN, ACTIVATION, DROPOUT, MODEL_PATH)
-
+muids_map, content_ids_map = load_train_muid_and_content_id(TRAIN_MUID, TRAIN_CONTENT_ID)
 
 if __name__ == "__main__":
     run_server()

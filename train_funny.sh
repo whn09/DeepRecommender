@@ -11,7 +11,7 @@ python3 run.py --gpu_ids 0 \
 --weight_decay 0 \
 --aug_step 1 \
 --noise_prob 0 \
---num_epochs 100 \
+--num_epochs 200 \
 --summary_frequency 1000
 
 
