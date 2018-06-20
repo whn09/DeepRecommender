@@ -8,7 +8,7 @@ TEST = os.path.join(DATA_ROOT, 'test.txt')
 
 #Autoencoder parameters
 GPUS = 0
-USE_GPU = True
+USE_GPU = True # False for CPU, True for GPU
 ACTIVATION = 'selu'
 OPTIMIZER = 'momentum'
 HIDDEN = '128,256,256'

@@ -75,7 +75,7 @@ def load_recommender(vector_dim, hidden, activation, dropout, weights_path):
                                nl_type=activation,
                                is_constrained=False,
                                dp_drop_prob=dropout,
-                               last_layer_activations=False)
+                               last_layer_activations=True)
     load_model_weights(rencoder_api, weights_path) 
     rencoder_api.eval()
     if USE_GPU: rencoder_api = rencoder_api.cuda()

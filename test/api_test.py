@@ -8,7 +8,7 @@ import time
 DATA_ROOT = '/media/henan.wang/workspace/dataset/log_preprocess'
 TRAIN = os.path.join(DATA_ROOT, 'train.txt')
 EVAL = os.path.join(DATA_ROOT, 'test.txt')
-TEST = os.path.join(DATA_ROOT, 'test.txt')
+TEST = os.path.join(DATA_ROOT, 'test_one.txt')
 MOVIE_TITLES = os.path.join(DATA_ROOT,'contentid_titles.txt')
 MODEL_OUTPUT_DIR = 'model_save_funny'
 INFER_OUTPUT = os.path.join(MODEL_OUTPUT_DIR, 'preds_api.txt')
@@ -23,7 +23,7 @@ def infer_one(dict_query, fout=None):
     res = requests.post(end_point_recommend, data=data, headers=headers)
     #print(res.ok)
     res_json = res.json()
-    print(json.dumps(res_json, indent=2))
+    #print(json.dumps(res_json, indent=2))
     one_hit = 0
     one_not_hit = 0
     two_hit = 0
@@ -64,9 +64,9 @@ def infer_all():
     all_one_not_hit = 0
     all_two_hit = 0
     all_two_not_hit = 0
-    start = time.time()
     user_ids = {}
     fout = open(INFER_OUTPUT, 'w')
+    start = time.time()
     for index, row in df2.iterrows():
         user_id = int(row['CustomerID'])
         if user_id not in user_ids:
@@ -106,10 +106,10 @@ def infer_all():
     fout.close()
     
 if __name__=='__main__':
-    #infer_all()
+    infer_all()
     
-    dict_query = {9:1,'user_id':12288}
-    one_hit, one_not_hit, two_hit, two_not_hit = infer_one(dict_query)
-    print('Final Precision:',(one_hit+two_hit)/float(one_hit+one_not_hit+two_hit+two_not_hit))
+    #dict_query = {9:1,'user_id':12288}
+    #one_hit, one_not_hit, two_hit, two_not_hit = infer_one(dict_query)
+    #print('Final Precision:',(one_hit+two_hit)/float(one_hit+one_not_hit+two_hit+two_not_hit))
 
     

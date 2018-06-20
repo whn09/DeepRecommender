@@ -77,6 +77,8 @@ def main():
                                                         user_id_map=data_layer.userIdMap,
                                                         item_id_map=data_layer.itemIdMap)
 
+  print('args.constrained:'+str(args.constrained))
+  print('not args.skip_last_layer_nl:'+str(not args.skip_last_layer_nl))
   rencoder = model.AutoEncoder(layer_sizes=[data_layer.vector_dim] + [int(l) for l in args.hidden_layers.split(',')],
                                nl_type=args.non_linearity_type,
                                is_constrained=args.constrained,
