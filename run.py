@@ -129,12 +129,18 @@ def main():
                                is_constrained=args.constrained,
                                dp_drop_prob=args.drop_prob,
                                last_layer_activations=not args.skip_last_layer_nl)
+  
+  start_epoch = 0
   os.makedirs(args.logdir, exist_ok=True)
   model_checkpoint = args.logdir + "/model"
-  path_to_model = Path(model_checkpoint)
-  if path_to_model.is_file():
-    print("Loading model from: {}".format(model_checkpoint))
-    rencoder.load_state_dict(torch.load(model_checkpoint))
+  for epoch in range(args.num_epochs)[::-1]:
+      model_name = model_checkpoint + ".epoch_"+str(epoch)
+      path_to_model = Path(model_name)
+      if path_to_model.is_file():
+        print("Loading model from: {}".format(model_name))
+        rencoder.load_state_dict(torch.load(model_name))
+        start_epoch = epoch+1
+        break
 
   print('######################################################')
   print('######################################################')
@@ -171,7 +177,7 @@ def main():
                               lr=args.lr, momentum=0.9,
                               weight_decay=args.weight_decay)
   else:
-    raise  ValueError('Unknown optimizer kind')
+    raise ValueError('Unknown optimizer kind')
 
   t_loss = 0.0
   t_loss_denom = 0.0
@@ -180,7 +186,7 @@ def main():
   if args.noise_prob > 0.0:
     dp = nn.Dropout(p=args.noise_prob)
 
-  for epoch in range(args.num_epochs):
+  for epoch in range(start_epoch, args.num_epochs): # continue training
     print('Doing epoch {} of {}'.format(epoch, args.num_epochs))
     e_start_time = time.time()
     rencoder.train()

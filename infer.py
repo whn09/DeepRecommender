@@ -127,7 +127,8 @@ def main():
   print('EVALUATION LOSS: {}'.format(eval_loss))
     
   try:
-    f1score(y_test, y_score)
+    f1score(y_test, y_score) # 0~1, step=0.1
+    f1score(y_test, y_score, step=0.01) # 0~0.1, step=0.01
     roc(y_test, y_score, args.predictions_path+'_roc.png')
     ks(y_test, y_score, args.predictions_path+'_ks.png')
   except Exception as e:

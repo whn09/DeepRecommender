@@ -114,12 +114,12 @@ def roc(y_test, y_score, filename):
     draw_roc(fpr, tpr, roc_auc, filename)
     
     
-def f1score(y_test, y_score):
+def f1score(y_test, y_score, step=0.1):
     max_y = int(max(y_test))
     print('max_y:',max_y)
     print('max(y_score):',max(y_score))
     for i in range(1, 10):
-        thres = round(i*0.1, 2)
+        thres = round(i*step, 2)
         y_pred = []
         for j in range(len(y_score)):
             for k in range(0, max_y+1):
